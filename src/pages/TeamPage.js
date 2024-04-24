@@ -5,6 +5,7 @@ import { MatchDetailCard } from "../components/MatchDetailCard";
 import { MatchSmallCard } from "../components/MatchSmallCard";
 import { useQuery } from "@tanstack/react-query";
 import { fetcherWithFetch } from "../lib/fetcher";
+import { PieChart } from "react-minimal-pie-chart";
 
 export const TeamPage = () => {
   const { teamName } = useParams();
@@ -27,7 +28,19 @@ export const TeamPage = () => {
           <div className="team-name-section">
             <h1 className="team-name">{data.teamName}</h1>
           </div>
-          <div className="win-loss-section">Wins / Losses</div>
+          <div className="win-loss-section">
+            Wins / Losses
+            <PieChart
+              data={[
+                {
+                  title: "Losses",
+                  value: data.totalMatches - data.totalWins,
+                  color: "#a34d5d",
+                },
+                { title: "Wins", value: data.totalWins, color: "#4da375" },
+              ]}
+            />
+          </div>
           <div className="match-detail-section">
             <h3>Latest Matches</h3>
             <MatchDetailCard teamName={data.teamName} match={data.matches[0]} />
@@ -40,7 +53,7 @@ export const TeamPage = () => {
               key={match.id}
             />
           ))}
-          <div>
+          <div className="more-link">
             <a href="#">More</a>
           </div>
         </div>
