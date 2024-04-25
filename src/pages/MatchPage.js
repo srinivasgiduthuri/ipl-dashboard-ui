@@ -1,9 +1,10 @@
+import "./MatchPage.scss";
 import { React } from "react";
 import { useParams } from "react-router-dom";
 import { MatchDetailCard } from "../components/MatchDetailCard";
-import { MatchSmallCard } from "../components/MatchSmallCard";
 import { useQuery } from "@tanstack/react-query";
 import { fetcherWithFetch } from "../lib/fetcher";
+import { YearSelector } from "../components/YearSelector";
 
 export const MatchPage = () => {
   const { teamName, year } = useParams();
@@ -12,7 +13,7 @@ export const MatchPage = () => {
     error,
     isPending: loading,
   } = useQuery({
-    queryKey: ["matches", teamName],
+    queryKey: ["matches", teamName, year],
     queryFn: () =>
       fetcherWithFetch(
         `http://localhost:8080/team/${teamName}/matches?year=${year}`
@@ -21,12 +22,15 @@ export const MatchPage = () => {
 
   return (
     <div className="MatchPage">
-      {loading && <div>Loading...</div>}
-      {error && <div>Matches not found.</div>}
-
+      <div className="year-selector">
+        <h3>Select year</h3>
+        <YearSelector teamName={teamName} />
+      </div>
       {data && (
         <div>
-          <h1>Matches Page</h1>
+          <h1 className="page-heading">
+            {teamName} matches in {year}
+          </h1>
           {data.map((match) => (
             <MatchDetailCard teamName={teamName} match={match} key={match.id} />
           ))}
